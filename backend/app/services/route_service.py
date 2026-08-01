@@ -1,7 +1,7 @@
 import uuid
 from decimal import Decimal
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import GridCell, Product
@@ -55,7 +55,9 @@ async def compute_route_for_products(
 
     # Fetch products
     unique_ids = list(set(product_ids))
-    result = await db.execute(select(Product).where(Product.id.in_(unique_ids)))
+    # Use individual OR conditions to avoid asyncpg UUID array binding issues
+    conditions = [Product.id == pid for pid in unique_ids]
+    result = await db.execute(select(Product).where(or_(*conditions)))
     products = {p.id: p for p in result.scalars().all()}
 
     # Check for missing products
