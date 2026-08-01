@@ -1,5 +1,27 @@
 # Technical Documentation
 
+## Assumptions
+
+### From the assessment specification
+
+- The mall is a single-floor rectangular area mapped as a coordinate grid
+- Only one robot operates at a time — no moving obstacles
+- Product pickup time is negligible (0 seconds)
+- Robot speed is constant: 1 second per cell movement
+- Movement is 4-directional (horizontal/vertical only, no diagonals)
+- Grid configuration and product locations are static during order processing
+- Exactly one cell is designated as `robot_start` (enforced at the database layer)
+
+### Implementation assumptions
+
+- **Exact vs. heuristic threshold:** carts with <= 12 unique pickup locations get an exact optimal tour (Held-Karp); larger carts use NN + 2-opt, typically within 5-15% of optimal. The API response flags which was used (`exact: true/false`).
+- **Cart is client-side state:** no cart persistence, sessions, or user accounts — the kiosk scenario doesn't require them. Route computation is stateless per request.
+- **Product coordinates are trusted at seed time** to lie on accessible grid cells; if not, the route endpoint returns HTTP 409 rather than crashing.
+- **Quantity does not affect routing:** ordering 3 units of the same product requires one visit to its location; quantity only affects total price.
+- **`product_ids` per request is capped** to bound Held-Karp/matrix computation and prevent algorithmic DoS.
+- **Grid size is kiosk-scale** (tens x tens of cells); the grid is loaded from the DB per request and BFS is O(R*C), so no spatial indexing is needed at this scale.
+- **Estimated delivery time = path length in seconds** (1 sec/cell), since pickup time is zero by assumption.
+
 ## Algorithm Design
 
 ### Problem Decomposition
