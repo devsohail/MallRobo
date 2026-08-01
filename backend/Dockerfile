@@ -6,12 +6,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml ./
-COPY app ./app
+COPY backend/pyproject.toml ./
+COPY backend/app ./app
 
 RUN pip install --no-cache-dir -e .
 
-COPY . .
+COPY backend/ .
 
 RUN chmod +x /app/entrypoint.sh
 

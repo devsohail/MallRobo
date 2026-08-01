@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ["python312", "postgresql"]
-
-[phases.install]
-cmds = ["pip install -e ."]
-
-[start]
-cmd = "bash entrypoint.sh"
