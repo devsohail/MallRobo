@@ -77,6 +77,14 @@ cd frontend && npx vitest run src/__tests__/Cart.test.tsx
 cd frontend && npx vitest run -t "Cart"
 ```
 
+### Pre-commit hook
+
+Install the git pre-commit hook to run backend and frontend tests automatically before each commit:
+
+```bash
+./scripts/install-hooks.sh
+```
+
 ### Lint, security & tests — all at once
 
 ```bash

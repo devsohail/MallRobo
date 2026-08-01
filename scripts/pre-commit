@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BOLD='\033[1m'
+RESET='\033[0m'
+
+printf "${BOLD}▶ Running pre-commit checks...${RESET}\n\n"
+
+# ── Backend tests ──
+printf "${BOLD}  Backend tests${RESET}\n"
+cd "$PROJECT_ROOT/backend"
+if python -m pytest tests/ -q; then
+    printf "  ${GREEN}✓ Backend tests passed${RESET}\n\n"
+else
+    printf "  ${RED}✗ Backend tests failed${RESET}\n"
+    printf "${RED}${BOLD}Commit aborted.${RESET}\n"
+    exit 1
+fi
+
+# ── Frontend tests ──
+printf "${BOLD}  Frontend tests${RESET}\n"
+cd "$PROJECT_ROOT/frontend"
+if npx vitest run --reporter=dot; then
+    printf "  ${GREEN}✓ Frontend tests passed${RESET}\n\n"
+else
+    printf "  ${RED}✗ Frontend tests failed${RESET}\n"
+    printf "${RED}${BOLD}Commit aborted.${RESET}\n"
+    exit 1
+fi
+
+printf "${GREEN}${BOLD}All pre-commit checks passed.${RESET}\n"
