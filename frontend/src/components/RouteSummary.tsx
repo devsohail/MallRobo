@@ -26,30 +26,35 @@ export function RouteSummary({ route, loading, error }: RouteSummaryProps) {
   if (!route) return null;
 
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-md p-4 space-y-2">
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-gray-600">Total Price</span>
-        <span className="font-semibold text-gray-900">${Number(route.total_price).toFixed(2)}</span>
-      </div>
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-gray-600">Delivery Time</span>
-        <span className="font-semibold text-gray-900">{route.total_seconds}s</span>
-      </div>
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-gray-600">Solution</span>
-        <span
-          className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-            route.exact
-              ? 'bg-green-100 text-green-800'
-              : 'bg-yellow-100 text-yellow-800'
-          }`}
-        >
-          {route.exact ? 'Exact' : 'Heuristic'}
+    <div className="grid grid-cols-3 gap-3">
+      <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center text-center">
+        <span className="text-2xl mb-1" role="img" aria-label="Total price">
+          💰
+        </span>
+        <span className="text-xs text-gray-500">Total Price</span>
+        <span className="text-lg font-bold text-gray-900">
+          ${Number(route.total_price).toFixed(2)}
         </span>
       </div>
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-gray-600">Stops</span>
-        <span className="font-semibold text-gray-900">{route.visit_order.length}</span>
+
+      <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center text-center">
+        <span className="text-2xl mb-1" role="img" aria-label="Delivery time">
+          ⏱️
+        </span>
+        <span className="text-xs text-gray-500">Delivery Time</span>
+        <span className="text-lg font-bold text-gray-900">
+          {route.total_seconds}s
+        </span>
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center text-center">
+        <span className="text-2xl mb-1" role="img" aria-label="Stops">
+          📍
+        </span>
+        <span className="text-xs text-gray-500">Stops</span>
+        <span className="text-lg font-bold text-gray-900">
+          {route.visit_order.length}
+        </span>
       </div>
     </div>
   );

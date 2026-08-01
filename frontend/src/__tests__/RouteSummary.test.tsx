@@ -33,24 +33,20 @@ describe('RouteSummary', () => {
     expect(screen.getByText('12s')).toBeInTheDocument();
   });
 
-  it('shows Exact badge for exact solution', () => {
-    const route = makeRoute({ exact: true });
-    render(<RouteSummary route={route} loading={false} error={null} />);
-    expect(screen.getByText('Exact')).toBeInTheDocument();
-  });
-
-  it('shows Heuristic badge for non-exact solution', () => {
-    const route = makeRoute({ exact: false });
-    render(<RouteSummary route={route} loading={false} error={null} />);
-    expect(screen.getByText('Heuristic')).toBeInTheDocument();
-  });
-
   it('displays number of stops', () => {
     const route = makeRoute({
       visit_order: [{ x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }],
     });
     render(<RouteSummary route={route} loading={false} error={null} />);
     expect(screen.getByText('3')).toBeInTheDocument();
+  });
+
+  it('renders stat card icons', () => {
+    const route = makeRoute();
+    render(<RouteSummary route={route} loading={false} error={null} />);
+    expect(screen.getByLabelText('Total price')).toBeInTheDocument();
+    expect(screen.getByLabelText('Delivery time')).toBeInTheDocument();
+    expect(screen.getByLabelText('Stops')).toBeInTheDocument();
   });
 
   it('error takes priority over loading', () => {

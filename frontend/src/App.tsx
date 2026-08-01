@@ -109,13 +109,16 @@ function App() {
           </div>
         </div>
 
-        {/* Center panel: Grid Visualization */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Robot Route</h2>
-          <GridCanvas grid={grid} route={route} cartItems={cartItems} />
+        {/* Center panel: Grid Visualization + Route Stats */}
+        <div className="space-y-4">
+          <div className="bg-white rounded-lg shadow p-4">
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">Robot Route</h2>
+            <GridCanvas grid={grid} route={route} cartItems={cartItems} />
+          </div>
+          <RouteSummary route={route} loading={routeLoading} error={routeError} />
         </div>
 
-        {/* Right panel: Cart & Route Summary */}
+        {/* Right panel: Cart */}
         <div className="space-y-6">
           <div className="bg-white rounded-lg shadow p-4">
             <h2 className="text-lg font-semibold text-gray-900 mb-3">
@@ -127,8 +130,6 @@ function App() {
               onRemove={handleRemove}
             />
           </div>
-
-          <RouteSummary route={route} loading={routeLoading} error={routeError} />
         </div>
       </main>
     </div>
