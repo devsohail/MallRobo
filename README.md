@@ -99,10 +99,10 @@ frontend/src/
 │   └── helpers.ts           # Factory functions (makeStore, makeProduct, …)
 └── __tests__/
     ├── Cart.test.tsx         # 7 tests
-    ├── RouteSummary.test.tsx # 9 tests
+    ├── RouteSummary.test.tsx # 8 tests
     ├── StoreSelector.test.tsx# 4 tests
     ├── ProductList.test.tsx  # 6 tests
-    ├── GridCanvas.test.tsx   # 6 tests
+    ├── GridCanvas.test.tsx   # 7 tests
     └── client.test.ts        # 7 tests
 ```
 
@@ -111,7 +111,7 @@ frontend/src/
 Run the entire stack (PostgreSQL, backend, frontend) with a single command. Requires Docker and Docker Compose.
 
 ```bash
-docker compose up --build
+docker-compose up --build
 ```
 
 | Service | URL |
@@ -125,15 +125,18 @@ The backend container automatically runs migrations and seeds the database on st
 To stop and remove containers:
 
 ```bash
-docker compose down
+docker-compose down
 ```
 
 To also remove the database volume:
 
 ```bash
-docker compose down -v
+docker-compose down -v
 ```
 
-## Architecture
+## Documentation
 
-See [docs/TECHNICAL.md](docs/TECHNICAL.md) for algorithm analysis and [docs/DECISIONS.md](docs/DECISIONS.md) for architectural decisions.
+- [docs/TECHNICAL.md](docs/TECHNICAL.md) — Algorithm analysis
+- [docs/DECISIONS.md](docs/DECISIONS.md) — Architectural decisions
+- [CODE_AUDIT.md](CODE_AUDIT.md) — Security audit and architecture assessment
+- [AI_REVIEW_LOG.md](AI_REVIEW_LOG.md) — Code review log and bug corrections
