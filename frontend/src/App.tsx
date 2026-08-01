@@ -92,7 +92,7 @@ function App() {
         <p className="text-sm text-gray-500">Mall Robot Shopping Cart System</p>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <main className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-[250px_1fr_280px] gap-6">
         {/* Left panel: Store & Products */}
         <div className="space-y-6">
           <div className="bg-white rounded-lg shadow p-4">
@@ -107,7 +107,16 @@ function App() {
             <h2 className="text-lg font-semibold text-gray-900 mb-3">Products</h2>
             <ProductList storeId={selectedStoreId} onAddToCart={handleAddToCart} />
           </div>
+        </div>
 
+        {/* Center panel: Grid Visualization */}
+        <div className="bg-white rounded-lg shadow p-4">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Robot Route</h2>
+          <GridCanvas grid={grid} route={route} cartItems={cartItems} />
+        </div>
+
+        {/* Right panel: Cart & Route Summary */}
+        <div className="space-y-6">
           <div className="bg-white rounded-lg shadow p-4">
             <h2 className="text-lg font-semibold text-gray-900 mb-3">
               Cart ({cartItems.reduce((sum, i) => sum + i.quantity, 0)} items)
@@ -120,12 +129,6 @@ function App() {
           </div>
 
           <RouteSummary route={route} loading={routeLoading} error={routeError} />
-        </div>
-
-        {/* Right panel: Grid Visualization */}
-        <div className="lg:col-span-2 bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Robot Route</h2>
-          <GridCanvas grid={grid} route={route} cartItems={cartItems} />
         </div>
       </main>
     </div>
