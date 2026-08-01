@@ -1,8 +1,10 @@
 #!/bin/bash
 set -e
 
-# Extract host/port from DATABASE_URL for pg_isready
+# Convert postgresql:// to postgresql+asyncpg:// for SQLAlchemy async driver
 if [ -n "$DATABASE_URL" ]; then
+  export DATABASE_URL="${DATABASE_URL/postgresql:\/\//postgresql+asyncpg:\/\/}"
+
   DB_HOST=$(echo "$DATABASE_URL" | sed -n 's|.*@\([^:/]*\).*|\1|p')
   DB_PORT=$(echo "$DATABASE_URL" | sed -n 's|.*:\([0-9]*\)/.*|\1|p')
   echo "Waiting for PostgreSQL at ${DB_HOST}:${DB_PORT:-5432}..."
