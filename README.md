@@ -111,7 +111,7 @@ frontend/src/
 Run the entire stack (PostgreSQL, backend, frontend) with a single command. Requires Docker and Docker Compose.
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 | Service | URL |
@@ -125,13 +125,13 @@ The backend container automatically runs migrations and seeds the database on st
 To stop and remove containers:
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 To also remove the database volume:
 
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
 
 ## Documentation
