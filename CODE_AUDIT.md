@@ -170,11 +170,13 @@ User adds product to cart
 
 ### 2.7 Test Coverage
 
-| Suite | Tests | Framework | Target |
-|-------|-------|-----------|--------|
-| Backend API | 15 | pytest + httpx | Endpoints, error cases |
-| Backend pathfinding | 27 | pytest | BFS, TSP, solver, edge cases |
-| Frontend components | 39 | vitest + testing-library | All components, animation, API client |
+| Suite | Tests | Framework | Database | Target |
+|-------|-------|-----------|----------|--------|
+| Backend API | 15 | pytest + httpx | In-memory SQLite (aiosqlite) | Endpoints, error cases |
+| Backend pathfinding | 27 | pytest | None (pure Python) | BFS, TSP, solver, edge cases |
+| Frontend components | 39 | vitest + testing-library | N/A | All components, animation, API client |
+
+**Note:** Backend tests use in-memory SQLite via aiosqlite (`tests/conftest.py`) for speed and isolation. Local and production apps both run PostgreSQL 16 + asyncpg. This difference is why the asyncpg UUID `IN` clause bug was not caught by tests.
 
 ---
 

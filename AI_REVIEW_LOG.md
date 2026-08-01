@@ -6,7 +6,7 @@ This document tracks instances where AI-generated code was corrected during deve
 |---|------|---------------|-----------|-------------|
 | 1 | 2026-07-31 | `product.price` treated as `number` but API returns it as `string` (Decimal serialization). Caused `TypeError: price.toFixed is not a function` in `ProductList.tsx` and `Cart.tsx`. | User reported runtime crash when selecting a store and adding products to cart. | Wrapped all `price` usages with `Number()` before calling `.toFixed(2)` or arithmetic in `ProductList.tsx:43` and `Cart.tsx:15,29`. |
 | 2 | 2026-08-01 | Pathfinding algorithm choice questioned — BFS + TSP was used instead of BFS + A\*. | Human code review. | No change needed. BFS is optimal for unweighted grids (O(1) queue ops vs A\*'s O(log n) priority queue). A\* heuristic adds overhead with zero benefit on uniform-cost grids. TSP is a separate concern — it solves visit-order optimization (N! orderings), which BFS cannot address. See detailed analysis below. |
-| 3 | 2026-08-01 | `Product.id.in_(list[uuid.UUID])` returned empty results on PostgreSQL + asyncpg, causing route endpoint to 404 for valid product IDs. Worked on SQLite. | Human reported 404 on production `/api/route` with valid IDs confirmed via `/api/stores/{id}/products`. | Replaced `IN` clause with `or_(*[Product.id == pid for pid in unique_ids])`. Individual equality conditions bind correctly with asyncpg. See `backend/app/services/route_service.py:58-60`. |
+| 3 | 2026-08-01 | `Product.id.in_(list[uuid.UUID])` returned empty results on Railway's PostgreSQL + asyncpg, causing route endpoint to 404 for valid product IDs. | Human reported 404 on production `/api/route` with valid IDs confirmed via `/api/stores/{id}/products`. | Replaced `IN` clause with `or_(*[Product.id == pid for pid in unique_ids])`. Individual equality conditions bind correctly with asyncpg. See `backend/app/services/route_service.py:58-60`. |
 
 ---
 
@@ -42,7 +42,7 @@ The initial implementation was questioned for not using A* alongside BFS for pat
 **Status:** Resolved
 
 ### Symptom
-`POST /api/route` returned `{"detail":"Products not found"}` with product IDs that existed and were returned correctly by `GET /api/stores/{id}/products`. Only occurred on Railway (PostgreSQL + asyncpg), not locally (SQLite).
+`POST /api/route` returned `{"detail":"Products not found"}` with product IDs that existed and were returned correctly by `GET /api/stores/{id}/products`. Occurred on Railway's PostgreSQL + asyncpg deployment. Local development also uses PostgreSQL via Docker Compose; the test suite uses in-memory SQLite (aiosqlite) per `tests/conftest.py`.
 
 ### Root Cause
 `asyncpg` has a known issue binding a Python `list[uuid.UUID]` as a PostgreSQL UUID array parameter in SQLAlchemy `IN` clauses:
@@ -63,10 +63,11 @@ result = await db.execute(select(Product).where(or_(*conditions)))
 ```
 
 ### Verification
-- All 42 backend tests pass (SQLite)
-- Production route endpoint works correctly (PostgreSQL + asyncpg)
+- All 42 backend tests pass (test suite uses in-memory SQLite via aiosqlite)
+- Local Docker Compose app runs correctly (PostgreSQL 16 + asyncpg)
+- Production route endpoint works correctly on Railway (PostgreSQL + asyncpg)
 - The `product_ids` cap of 50 in `RouteRequest` schema keeps the OR chain bounded
 
 ### Alternatives considered and rejected
-- `cast(pid, PG_UUID(as_uuid=True))` — PostgreSQL-specific, broke SQLite tests
+- `cast(pid, PG_UUID(as_uuid=True))` — PostgreSQL-specific, broke test suite (which runs on SQLite)
 - Converting UUIDs to strings — would require model-layer changes
