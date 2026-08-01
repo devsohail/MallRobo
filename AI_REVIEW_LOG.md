@@ -7,6 +7,7 @@ This document tracks instances where AI-generated code was corrected during deve
 | 1 | 2026-07-31 | `product.price` treated as `number` but API returns it as `string` (Decimal serialization). Caused `TypeError: price.toFixed is not a function` in `ProductList.tsx` and `Cart.tsx`. | User reported runtime crash when selecting a store and adding products to cart. | Wrapped all `price` usages with `Number()` before calling `.toFixed(2)` or arithmetic in `ProductList.tsx:43` and `Cart.tsx:15,29`. |
 | 2 | 2026-08-01 | Pathfinding algorithm choice questioned — BFS + TSP was used instead of BFS + A\*. | Human code review. | No change needed. BFS is optimal for unweighted grids (O(1) queue ops vs A\*'s O(log n) priority queue). A\* heuristic adds overhead with zero benefit on uniform-cost grids. TSP is a separate concern — it solves visit-order optimization (N! orderings), which BFS cannot address. See detailed analysis below. |
 | 3 | 2026-08-01 | `Product.id.in_(list[uuid.UUID])` returned empty results on Railway's PostgreSQL + asyncpg, causing route endpoint to 404 for valid product IDs. | Human reported 404 on production `/api/route` with valid IDs confirmed via `/api/stores/{id}/products`. | Replaced `IN` clause with `or_(*[Product.id == pid for pid in unique_ids])`. Individual equality conditions bind correctly with asyncpg. See `backend/app/services/route_service.py:58-60`. |
+| 4 | 2026-08-01 | No pre-commit hook existed — tests were not enforced before commits. AI commits bypassed testing gate via `--no-verify` or simply because no hook was configured. | Human committed a file and noticed tests did not run. | Created `scripts/pre-commit` hook that runs backend pytest and frontend vitest before each commit, aborting on failure. Added `scripts/install-hooks.sh` for portable setup. |
 
 ---
 
@@ -71,3 +72,24 @@ result = await db.execute(select(Product).where(or_(*conditions)))
 ### Alternatives considered and rejected
 - `cast(pid, PG_UUID(as_uuid=True))` — PostgreSQL-specific, broke test suite (which runs on SQLite)
 - Converting UUIDs to strings — would require model-layer changes
+
+---
+
+## Review 4 — Missing Pre-commit Hook (2026-08-01)
+
+**Reviewer:** Sohail Sajid (Human)
+**Status:** Resolved
+
+### Issue
+No git pre-commit hook was configured. The project's `CLAUDE.md` mandates "Tests must pass before any commit," but nothing enforced this. Commits could land without running the test suite.
+
+### How Found
+Human manually edited and committed a file — no tests ran.
+
+### Fix
+- Created `scripts/pre-commit` — runs `python -m pytest tests/ -q` (backend) and `npx vitest run` (frontend), aborting the commit if either fails.
+- Created `scripts/install-hooks.sh` — copies the hook to `.git/hooks/pre-commit` (since `.git/hooks/` is not tracked by git).
+- Updated `README.md` with setup instructions.
+
+### Verification
+- Committed with the hook active — all 42 backend and 39 frontend tests ran and passed before the commit was accepted.
