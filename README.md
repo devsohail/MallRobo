@@ -77,6 +77,14 @@ cd frontend && npx vitest run src/__tests__/Cart.test.tsx
 cd frontend && npx vitest run -t "Cart"
 ```
 
+### Pre-commit hook
+
+Install the git pre-commit hook to run backend and frontend tests automatically before each commit:
+
+```bash
+./scripts/install-hooks.sh
+```
+
 ### Lint, security & tests — all at once
 
 ```bash
@@ -99,10 +107,10 @@ frontend/src/
 │   └── helpers.ts           # Factory functions (makeStore, makeProduct, …)
 └── __tests__/
     ├── Cart.test.tsx         # 7 tests
-    ├── RouteSummary.test.tsx # 9 tests
+    ├── RouteSummary.test.tsx # 8 tests
     ├── StoreSelector.test.tsx# 4 tests
     ├── ProductList.test.tsx  # 6 tests
-    ├── GridCanvas.test.tsx   # 6 tests
+    ├── GridCanvas.test.tsx   # 7 tests
     └── client.test.ts        # 7 tests
 ```
 
@@ -134,6 +142,9 @@ To also remove the database volume:
 docker compose down -v
 ```
 
-## Architecture
+## Documentation
 
-See [docs/TECHNICAL.md](docs/TECHNICAL.md) for algorithm analysis and [docs/DECISIONS.md](docs/DECISIONS.md) for architectural decisions.
+- [docs/TECHNICAL.md](docs/TECHNICAL.md) — Algorithm analysis
+- [docs/DECISIONS.md](docs/DECISIONS.md) — Architectural decisions
+- [CODE_AUDIT.md](CODE_AUDIT.md) — Security audit and architecture assessment
+- [AI_REVIEW_LOG.md](AI_REVIEW_LOG.md) — Code review log and bug corrections
