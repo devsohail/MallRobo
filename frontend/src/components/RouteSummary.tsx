@@ -27,7 +27,7 @@ export function RouteSummary({ route, loading, error }: RouteSummaryProps) {
 
   return (
     <div className="grid grid-cols-3 gap-3">
-     /* <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center text-center">
+     {/* <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center text-center">
         <span className="text-2xl mb-1" role="img" aria-label="Total price">
           💰
         </span>
@@ -35,7 +35,7 @@ export function RouteSummary({ route, loading, error }: RouteSummaryProps) {
         <span className="text-lg font-bold text-gray-900">
           ${Number(route.total_price).toFixed(2)}
         </span>
-      </div>*/
+      </div>*/}
 
       <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center text-center">
         <span className="text-2xl mb-1" role="img" aria-label="Delivery time">
